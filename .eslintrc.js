@@ -16,5 +16,8 @@ module.exports = {
     sourceType: 'module'
   },
   plugins: ['react', '@typescript-eslint'],
-  rules: {}
+  rules: {
+    'linebreak-style': [0, 'error', 'windows'],
+    'prettier/prettier': ['error', { endOfLine: 'auto' }]
+  }
 }
