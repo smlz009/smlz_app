@@ -48,27 +48,34 @@ const router = createBrowserRouter([
             element: <Trash />
           }
         ]
-      },
-      {
-        path: 'question',
-        element: <QuestionLayout />,
-        children: [
-          {
-            path: 'edit/:id',
-            element: <Edit />
-          },
-          {
-            path: 'stat/:id',
-            element: <Stat />
-          }
-        ]
-      },
-      {
-        path: '*',
-        element: <NotFound />
       }
     ]
+  },
+  {
+    path: 'question',
+    element: <QuestionLayout />,
+    children: [
+      {
+        path: 'edit/:id',
+        element: <Edit />
+      },
+      {
+        path: 'stat/:id',
+        element: <Stat />
+      }
+    ]
+  },
+  {
+    path: '*',
+    element: <NotFound />
   }
 ])
 
 export default router
+
+// 常用路由常量
+export const HOME_PATH = '/'
+export const LOGIN_PATH = '/login'
+export const MANAGE_LIST_PATH = '/manage/list'
+export const STAR_LIST_PATH = '/manage/star'
+export const TRASH_LIST_PATH = '/manage/trash'

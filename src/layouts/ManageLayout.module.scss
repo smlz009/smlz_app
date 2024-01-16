@@ -7,6 +7,7 @@
 
 .left {
   width: 120px;
+  flex-shrink: 0;
 }
 .right {
   flex: 1;
