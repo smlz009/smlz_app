@@ -15,7 +15,7 @@ const Logo: FC = () => {
           <Title>
             <SmileOutlined />
           </Title>
-          <Title>Smlz App</Title>
+          <Title>Smlz 问卷</Title>
         </Space>
       </Link>
     </div>

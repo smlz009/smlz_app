@@ -1,6 +1,10 @@
 import React, { FC, useState } from 'react'
 import QuestionCard from '../../components/QuestionCard'
-import styles from './List.module.scss'
+import ListSearch from '../../components/ListSearch'
+import styles from './common.module.scss'
+import { Typography } from 'antd'
+
+const { Title } = Typography
 
 const List: FC = () => {
   const [questionList] = useState([
@@ -15,8 +19,8 @@ const List: FC = () => {
     {
       _id: '2',
       title: '问卷2',
-      isPublished: false,
-      isStar: false,
+      isPublished: true,
+      isStar: true,
       answerCount: 4,
       createdAt: '3月20日 13:23'
     }
@@ -26,17 +30,20 @@ const List: FC = () => {
     <>
       <div className={styles.header}>
         <div className={styles.left}>
-          <h3>我的问卷</h3>
+          <Title level={3}>我的问卷</Title>
         </div>
-        <div className={styles.right}>搜索</div>
+        <div className={styles.right}>
+          <ListSearch />
+        </div>
       </div>
       <div className={styles.content}>
-        {questionList.map((q) => {
-          const { _id } = q
-          return <QuestionCard key={_id} {...q} />
-        })}
+        {questionList.length &&
+          questionList.map((q) => {
+            const { _id } = q
+            return <QuestionCard key={_id} {...q} />
+          })}
       </div>
-      <div className={styles.footer}>分页</div>
+      <div className={styles.footer}>上拉加载</div>
     </>
   )
 }
