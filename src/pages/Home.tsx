@@ -10,7 +10,7 @@ const Home: FC = () => {
   const nav = useNavigate()
 
   useEffect(() => {
-    fetch('api/mock/test')
+    fetch('api/question/test')
       .then((res) => res.json())
       .then((data) => {
         console.log('🚀 ~ fetch ~ data:', data)
