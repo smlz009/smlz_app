@@ -1,7 +1,8 @@
 module.exports = {
   env: {
     browser: true,
-    es2021: true
+    es2021: true,
+    node: true
   },
   extends: [
     'eslint:recommended',
@@ -18,6 +19,7 @@ module.exports = {
   plugins: ['react', '@typescript-eslint'],
   rules: {
     'linebreak-style': [0, 'error', 'windows'],
-    'prettier/prettier': ['error', { endOfLine: 'auto' }]
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    '@typescript-eslint/no-explicit-any': 'off' //关闭any类型警告
   }
 }

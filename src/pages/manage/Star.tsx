@@ -2,29 +2,15 @@ import React, { FC, useState } from 'react'
 import QuestionCard from '../../components/QuestionCard'
 import ListSearch from '../../components/ListSearch'
 import styles from './common.module.scss'
-import { Typography, Empty } from 'antd'
+import { Typography, Empty, Spin } from 'antd'
+import useLoadQuestionListData from '../../hooks/useLoadQuestionListData'
 
 const { Title } = Typography
 
 const Star: FC = () => {
-  const [questionList] = useState([
-    // {
-    //   _id: '1',
-    //   title: '问卷1',
-    //   isPublished: false,
-    //   answerCount: 5,
-    //   isStar: false,
-    //   createdAt: '3月10日 13:23'
-    // }
-    {
-      _id: '2',
-      title: '问卷2',
-      isPublished: true,
-      isStar: true,
-      answerCount: 4,
-      createdAt: '3月20日 13:23'
-    }
-  ])
+  const { data = {}, loading } = useLoadQuestionListData({ isStar: true })
+  const { list = [], total = 0 } = data
+
   return (
     <>
       <div className={styles.header}>
@@ -36,10 +22,16 @@ const Star: FC = () => {
         </div>
       </div>
       <div className={styles.content}>
-        {questionList.length === 0 ? (
+        {loading && (
+          <div style={{ textAlign: 'center' }}>
+            <Spin />
+          </div>
+        )}
+
+        {!loading && list.length === 0 ? (
           <Empty />
         ) : (
-          questionList.map((q) => {
+          list.map((q: any) => {
             const { _id } = q
             return <QuestionCard key={_id} {...q} />
           })

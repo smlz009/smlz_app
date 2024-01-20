@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Typography } from 'antd'
 import { MANAGE_LIST_PATH } from '../router'
@@ -8,14 +8,6 @@ const { Title, Paragraph } = Typography
 
 const Home: FC = () => {
   const nav = useNavigate()
-
-  useEffect(() => {
-    fetch('api/question/test')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('🚀 ~ fetch ~ data:', data)
-      })
-  }, [])
 
   return (
     <div className={styles.container}>

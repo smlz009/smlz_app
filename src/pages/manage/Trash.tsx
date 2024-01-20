@@ -1,8 +1,9 @@
 import React, { FC, useState } from 'react'
 import styles from './common.module.scss'
-import { Typography, Table, Tag, Button, Space, Modal } from 'antd'
+import { Typography, Table, Tag, Button, Space, Modal, Spin } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import ListSearch from '../../components/ListSearch'
+import useLoadQuestionListData from '../../hooks/useLoadQuestionListData'
 
 const { Title } = Typography
 const { confirm } = Modal
@@ -35,24 +36,8 @@ const Trash: FC = () => {
     }
   ]
 
-  const [questionList] = useState([
-    {
-      _id: '1',
-      title: '问卷1',
-      isPublished: false,
-      answerCount: 5,
-      isStar: false,
-      createdAt: '3月10日 13:23'
-    },
-    {
-      _id: '2',
-      title: '问卷2',
-      isPublished: true,
-      isStar: true,
-      answerCount: 4,
-      createdAt: '3月20日 13:23'
-    }
-  ])
+  const { data = {}, loading } = useLoadQuestionListData({ isDetected: true })
+  const { list = [], total = 0 } = data
 
   //记录选中的Ids
   const [selectedIds, setSelectedIds] = useState<string[]>([])
@@ -81,7 +66,7 @@ const Trash: FC = () => {
         </Space>
       </div>
       <Table
-        dataSource={questionList}
+        dataSource={list}
         columns={columns}
         pagination={false}
         rowKey={(q) => q._id}
@@ -105,7 +90,13 @@ const Trash: FC = () => {
           <ListSearch />
         </div>
       </div>
-      <div className={styles.content}>{TableElem}</div>
+      {loading ? (
+        <div style={{ textAlign: 'center' }}>
+          <Spin />
+        </div>
+      ) : (
+        <div className={styles.content}>{TableElem}</div>
+      )}
     </>
   )
 }
