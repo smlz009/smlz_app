@@ -1,9 +1,10 @@
-import React, { FC, useState } from 'react'
+import React, { FC } from 'react'
+import { Typography, Empty, Spin } from 'antd'
 import QuestionCard from '../../components/QuestionCard'
 import ListSearch from '../../components/ListSearch'
-import styles from './common.module.scss'
-import { Typography, Empty, Spin } from 'antd'
+import ListPage from '../../components/ListPage'
 import useLoadQuestionListData from '../../hooks/useLoadQuestionListData'
+import styles from './common.module.scss'
 
 const { Title } = Typography
 
@@ -37,7 +38,9 @@ const Star: FC = () => {
           })
         )}
       </div>
-      <div className={styles.footer}>分页</div>
+      <div className={styles.footer}>
+        <ListPage total={total} />
+      </div>
     </>
   )
 }

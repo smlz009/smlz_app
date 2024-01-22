@@ -1,5 +1,6 @@
-import React, { FC } from 'react'
-import { Button, Space, Divider, Tag, Popconfirm, Modal } from 'antd'
+import React, { FC, useState } from 'react'
+import { useRequest } from 'ahooks'
+import { Button, Space, Divider, Tag, Popconfirm, Modal, message } from 'antd'
 import {
   EditOutlined,
   LineChartOutlined,
@@ -8,8 +9,9 @@ import {
   DeleteOutlined,
   ExclamationCircleOutlined
 } from '@ant-design/icons'
-import styles from './QuestionCard.module.scss'
 import { useNavigate, Link } from 'react-router-dom'
+import { updateQuestionService, duplicateQuestionService } from '../services/question'
+import styles from './QuestionCard.module.scss'
 
 type PropsType = {
   _id: string
@@ -17,28 +19,77 @@ type PropsType = {
   isPublished: boolean
   answerCount: number
   isStar: boolean
-  createdAt: string
+  createTime: string
+  isDetected: boolean
 }
 
 const { confirm } = Modal
 
 const QuestionCard: FC<PropsType> = (props) => {
-  const { _id, title, isPublished, answerCount, createdAt, isStar } = props
+  const { _id, title, isPublished, answerCount, createTime, isStar, isDetected } = props
   const nav = useNavigate()
 
-  function duplicate() {
-    console.log('🚀 ~ duplicate ~ duplicate:')
-  }
+  //修改标星
+  const [isStartState, setIsStartState] = useState(isStar)
+  //修改删除
+  const [isDetectedState, setIsDetectedState] = useState(isDetected)
+
+  //修改标星
+  const { run: handleIsStart, loading } = useRequest(
+    async () => {
+      await updateQuestionService(parseInt(_id), { isStar: !isStartState })
+    },
+    {
+      manual: true,
+      onSuccess: () => {
+        setIsStartState(!isStartState)
+        message.success('修改成功')
+      }
+    }
+  )
+
+  //复制
+  const { run: handleDuplicate, loading: duplicateLoading } = useRequest(
+    async () => {
+      const data = await duplicateQuestionService(parseInt(_id))
+      return data
+    },
+    {
+      manual: true,
+      onSuccess(result: any) {
+        message.success('复制成功')
+        console.log(result)
+
+        nav(`/question/edit/${result.id}`)
+      }
+    }
+  )
+
+  //删除
+  const { run: handlIsDetected, loading: detectedLoading } = useRequest(
+    async () => {
+      await updateQuestionService(parseInt(_id), { isDetected: !isStartState })
+    },
+    {
+      manual: true,
+      onSuccess: () => {
+        setIsDetectedState(!isDetectedState)
+        message.success('删除成功')
+      }
+    }
+  )
 
   function del() {
     confirm({
       title: '确定删除该问券吗?',
       icon: <ExclamationCircleOutlined />,
       onOk: () => {
-        console.log('🚀 ~ del ~ del:')
+        handlIsDetected()
       }
     })
   }
+
+  if (isDetectedState) return null
 
   return (
     <div className={styles.container}>
@@ -46,7 +97,7 @@ const QuestionCard: FC<PropsType> = (props) => {
         <div className={styles.left}>
           <Link to={isPublished ? `/question/stat/${_id}` : `/question/edit/${_id}`}>
             <Space>
-              {isStar && <StarOutlined style={{ color: 'red' }} />}
+              {isStartState && <StarOutlined style={{ color: 'red' }} />}
               {title}
             </Space>
           </Link>
@@ -55,7 +106,7 @@ const QuestionCard: FC<PropsType> = (props) => {
           <Space>
             {isPublished ? <Tag color="processing">已发布</Tag> : <Tag>未发布</Tag>}
             <span>答卷:{answerCount}</span>
-            <span>{createdAt}</span>
+            <span>{createTime}</span>
           </Space>
         </div>
       </div>
@@ -84,20 +135,32 @@ const QuestionCard: FC<PropsType> = (props) => {
         </div>
         <div className={styles.right}>
           <Space>
-            <Button icon={<StarOutlined />} size="small" type="text">
-              {isStar ? '取消标星' : '标星'}
+            <Button
+              icon={<StarOutlined />}
+              size="small"
+              type="text"
+              disabled={loading}
+              onClick={handleIsStart}
+            >
+              {isStartState ? '取消标星' : '标星'}
             </Button>
             <Popconfirm
               title="确定复制该问券吗?"
               okText="确定"
               cancelText="取消"
-              onConfirm={duplicate}
+              onConfirm={handleDuplicate}
             >
-              <Button icon={<CopyOutlined />} size="small" type="text">
+              <Button icon={<CopyOutlined />} size="small" type="text" disabled={duplicateLoading}>
                 复制
               </Button>
             </Popconfirm>
-            <Button icon={<DeleteOutlined />} size="small" type="text" onClick={del}>
+            <Button
+              icon={<DeleteOutlined />}
+              size="small"
+              type="text"
+              onClick={del}
+              disabled={detectedLoading}
+            >
               删除
             </Button>
           </Space>
