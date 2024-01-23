@@ -1,14 +1,17 @@
 import React, { FC, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { Typography, Space, Form, Input, Button, Checkbox } from 'antd'
+import { Link, useNavigate } from 'react-router-dom'
+import { Typography, Space, Form, Input, Button, Checkbox, message } from 'antd'
 import { UserAddOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { REGISTER_PATH, HOME_PATH } from '../router'
+import { loginService } from '../services/user'
 import styles from './Login.module.scss'
-import { REGISTER_PATH } from '../router'
+import { setToken } from '../utils/user-token'
 
 const { Title } = Typography
 
 interface Iinfo {
-  username: string
+  name: string
   password: string
   remember: boolean
 }
@@ -16,8 +19,8 @@ interface Iinfo {
 const USERNAME_KEY = 'USERNAME'
 const PASSWORD_KEY = 'PASSWORD'
 
-function rememberUser(username: string, password: string) {
-  localStorage.setItem(USERNAME_KEY, username)
+function rememberUser(name: string, password: string) {
+  localStorage.setItem(USERNAME_KEY, name)
   localStorage.setItem(PASSWORD_KEY, password)
 }
 
@@ -28,23 +31,41 @@ function deleteUser() {
 
 function getUser() {
   return {
-    username: localStorage.getItem(USERNAME_KEY),
+    name: localStorage.getItem(USERNAME_KEY),
     password: localStorage.getItem(PASSWORD_KEY)
   }
 }
 
 const Login: FC = () => {
   const [form] = Form.useForm()
+  const nav = useNavigate()
 
   useEffect(() => {
-    const { username, password } = getUser()
-    form.setFieldsValue({ username, password })
+    const { name, password } = getUser()
+    form.setFieldsValue({ name, password })
   }, [])
 
+  const { run } = useRequest(
+    async (name: string, password: string) => {
+      const data = await loginService(name, password)
+      return data
+    },
+    {
+      manual: true,
+      onSuccess: (result) => {
+        const { token = '' } = result
+        setToken(token)
+        message.success('登录成功')
+        nav(HOME_PATH)
+      }
+    }
+  )
+
   function onFinish(value: Iinfo) {
-    const { username, password, remember } = value
+    const { name, password, remember } = value
+    run(name, password)
     if (remember) {
-      rememberUser(username, password)
+      rememberUser(name, password)
     } else {
       deleteUser()
     }
@@ -70,7 +91,7 @@ const Login: FC = () => {
         >
           <Form.Item
             label="用户名"
-            name="username"
+            name="name"
             rules={[
               { required: true, message: '请输入用户名' },
               { type: 'string', max: 20, message: '长度最多20' },

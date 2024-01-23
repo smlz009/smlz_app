@@ -1,21 +1,39 @@
 import React, { FC } from 'react'
-import { Typography, Space, Form, Input, Button } from 'antd'
-import { Link } from 'react-router-dom'
+import { Typography, Space, Form, Input, Button, message } from 'antd'
+import { Link, useNavigate } from 'react-router-dom'
 import { UserAddOutlined } from '@ant-design/icons'
-import styles from './Register.module.scss'
+import { useRequest } from 'ahooks'
+import { registerService } from '../services/user'
 import { LOGIN_PATH } from '../router'
+import styles from './Register.module.scss'
 
 const { Title } = Typography
 
 interface Iinfo {
-  username: string
+  name: string
   password: string
   confirm: string
 }
 
 const Register: FC = () => {
+  const nav = useNavigate()
+
+  const { run } = useRequest(
+    async (info) => {
+      const { name, password } = info
+      await registerService(name, password)
+    },
+    {
+      manual: true,
+      onSuccess: () => {
+        message.success('注册成功')
+        nav(LOGIN_PATH)
+      }
+    }
+  )
+
   function onFinish(value: Iinfo) {
-    console.log(value)
+    run(value)
   }
 
   return (
@@ -32,7 +50,7 @@ const Register: FC = () => {
         <Form labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} onFinish={onFinish}>
           <Form.Item
             label="用户名"
-            name="username"
+            name="name"
             rules={[
               { required: true, message: '请输入用户名' },
               { type: 'string', max: 20, message: '长度最多20' },
