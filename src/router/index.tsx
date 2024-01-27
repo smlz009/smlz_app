@@ -80,3 +80,8 @@ export const REGISTER_PATH = '/register'
 export const MANAGE_LIST_PATH = '/manage/list'
 export const STAR_LIST_PATH = '/manage/star'
 export const TRASH_LIST_PATH = '/manage/trash'
+
+export const isLoginOrRegister = (pathName: string) => {
+  if ([LOGIN_PATH, REGISTER_PATH].includes(pathName)) return true
+  return false
+}

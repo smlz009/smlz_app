@@ -1,20 +1,23 @@
 import React, { FC } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button, message } from 'antd'
-import { useRequest } from 'ahooks'
 import { UserOutlined } from '@ant-design/icons'
 import { LOGIN_PATH } from '../router'
-import { getUserInfoService } from '../services/user'
+import { useDispatch } from 'react-redux'
 import { removeToken } from '../utils/user-token'
+import useGetUserInfo from '../hooks/useGetUserInfo'
+import { logoutReduce } from '../store/userReducer'
 
 const Logo: FC = () => {
-  const { data } = useRequest(async () => getUserInfoService('7'))
-  const { name } = data || {}
+  // const { data } = useRequest(async () => getUserInfoService('7'))
+  // const { name } = data || {}
+  const { username } = useGetUserInfo()
   const nav = useNavigate()
+  const dispatch = useDispatch()
 
   function logout() {
-    //清除token
-    removeToken()
+    dispatch(logoutReduce()) //情况redux user
+    removeToken() //清除token
     message.success('退出成功')
     nav(LOGIN_PATH)
   }
@@ -23,7 +26,7 @@ const Logo: FC = () => {
     <>
       <span style={{ color: '#e8e8e8' }}>
         <UserOutlined></UserOutlined>
-        {name}
+        {username}
         <Button type="link" onClick={logout}>
           退出
         </Button>
@@ -37,7 +40,7 @@ const Logo: FC = () => {
     </>
   )
 
-  return <>{name ? <UserInfo /> : <Login />}</>
+  return <>{username ? <UserInfo /> : <Login />}</>
 }
 
 export default Logo
