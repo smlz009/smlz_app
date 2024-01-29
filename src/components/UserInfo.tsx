@@ -8,7 +8,7 @@ import { removeToken } from '../utils/user-token'
 import useGetUserInfo from '../hooks/useGetUserInfo'
 import { logoutReduce } from '../store/userReducer'
 
-const Logo: FC = () => {
+const UserInfo: FC = () => {
   // const { data } = useRequest(async () => getUserInfoService('7'))
   // const { name } = data || {}
   const { username } = useGetUserInfo()
@@ -43,4 +43,4 @@ const Logo: FC = () => {
   return <>{username ? <UserInfo /> : <Login />}</>
 }
 
-export default Logo
+export default UserInfo

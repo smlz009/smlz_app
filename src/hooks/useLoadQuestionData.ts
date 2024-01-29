@@ -1,18 +1,38 @@
+import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { getQuestionService } from '../services/question'
 import { useRequest } from 'ahooks'
+import { useDispatch } from 'react-redux'
+import { getQuestionService } from '../services/question'
+import { resetComponents } from '../store/compontentsReducer'
 
 function useLoadQuestionData() {
   const { id = '' } = useParams()
+  const dispatch = useDispatch()
 
-  async function load() {
-    const data = await getQuestionService(id)
-    return data
-  }
+  const { loading, data, error, run } = useRequest(
+    async (id) => {
+      if (!id) throw new Error('没有问卷')
+      const data = await getQuestionService(id)
+      return data
+    },
+    {
+      manual: true
+    }
+  )
+  useEffect(() => {
+    if (!data) return
+    const { title = '', componentList = [] } = data
 
-  const { loading, data, error } = useRequest(load)
+    //把画布数据存在 redux中
+    dispatch(resetComponents({ componentList, selectedId: '' }))
+  }, [data])
 
-  return { loading, data, error }
+  //获取数据
+  useEffect(() => {
+    run(id)
+  }, [id])
+
+  return { loading, error }
 }
 
 export default useLoadQuestionData
