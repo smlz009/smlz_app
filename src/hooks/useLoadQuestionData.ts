@@ -23,8 +23,14 @@ function useLoadQuestionData() {
     if (!data) return
     const { title = '', componentList = [] } = data
 
+    //获取默认的selectedId
+    let selectedId = ''
+    if (componentList.length) {
+      selectedId = componentList[0].fe_id
+    }
+
     //把画布数据存在 redux中
-    dispatch(resetComponents({ componentList, selectedId: '' }))
+    dispatch(resetComponents({ componentList, selectedId }))
   }, [data])
 
   //获取数据

@@ -1,6 +1,7 @@
-import React, { FC } from 'react'
+import React, { FC, MouseEvent } from 'react'
 import { Spin } from 'antd'
 import { useDispatch } from 'react-redux'
+import classNames from 'classnames'
 import useGetComponentInfo from '../../../hooks/useGetComponentInfo'
 import { getComponentConfByType } from '../../../components/QuestionComponents'
 import { ComponentInfoType, changeSelectedId } from '../../../store/compontentsReducer'
@@ -18,10 +19,11 @@ function genComponent(componentInfo: ComponentInfoType) {
 }
 
 const EditCanvas: FC<PropsType> = ({ loading }) => {
-  const { componentList } = useGetComponentInfo() //获取store redux数据
+  const { componentList, selectedId } = useGetComponentInfo() //获取store redux数据
   const dispatch = useDispatch() //获取dispatch
 
-  function handleClick(id: string) {
+  function handleClick(e: MouseEvent, id: string) {
+    e.stopPropagation()
     dispatch(changeSelectedId(id))
   }
 
@@ -37,12 +39,12 @@ const EditCanvas: FC<PropsType> = ({ loading }) => {
     <div className={styles.canvas}>
       {componentList.map((c) => {
         const { fe_id } = c
+        const warpperClass = classNames({
+          [styles['component-wrapper']]: true,
+          [styles.selected]: fe_id === selectedId
+        })
         return (
-          <div
-            key={fe_id}
-            className={styles['component-wrapper']}
-            onClick={() => handleClick(fe_id)}
-          >
+          <div key={fe_id} className={warpperClass} onClick={(e) => handleClick(e, fe_id)}>
             <div className={styles.component}>{genComponent(c)}</div>
           </div>
         )
