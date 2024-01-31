@@ -1,5 +1,6 @@
 import { QuestionInputPropsTypeDefaultProps } from './interface'
 import Component from './Component'
+import PropComponent from './PropComponent'
 
 export * from './interface'
 
@@ -7,6 +8,7 @@ export * from './interface'
 export default {
   title: '请输入标题',
   type: 'questionInput',
-  Component,
-  defaultProps: QuestionInputPropsTypeDefaultProps
+  Component, //画布显示
+  defaultProps: QuestionInputPropsTypeDefaultProps,
+  PropComponent //修改属性
 }

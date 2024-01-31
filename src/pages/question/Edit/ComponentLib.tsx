@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import { Typography } from 'antd'
 import { useDispatch } from 'react-redux'
+import { nanoid } from 'nanoid'
 import { componentConfGroup, ComponentConfigType } from '../../../components/QuestionComponents'
 import { addComponent } from '../../../store/compontentsReducer'
 import styles from './ComponentLib.module.scss'
@@ -13,7 +14,7 @@ function getComponent(c: ComponentConfigType) {
   function handleClick() {
     dispatch(
       addComponent({
-        fe_id: new Date() + '',
+        fe_id: nanoid(),
         type,
         title,
         props: defaultProps

@@ -9,6 +9,7 @@ export type ComponentConfigType = {
   title: string
   type: string
   Component: FC<ComponentPropsType>
+  PropComponent: FC<ComponentPropsType>
   defaultProps: ComponentPropsType
 }
 
@@ -29,6 +30,7 @@ export const componentConfGroup = [
   }
 ]
 
+//获取组件
 export function getComponentConfByType(type: string): ComponentConfigType {
   return componentConfList.find((c) => c.type === type) as ComponentConfigType
 }
