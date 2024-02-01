@@ -13,7 +13,7 @@ const ComponentProps: FC = () => {
   const dispatch = useDispatch()
   if (selectedComponent == null) return <NoProps />
 
-  const { type, props } = selectedComponent
+  const { type, props, isLocked } = selectedComponent
   const componentConf = getComponentConfByType(type)
   if (componentConf == null) return <NoProps />
 
@@ -25,7 +25,7 @@ const ComponentProps: FC = () => {
     dispatch(changeComponentProps({ fe_id, newProps }))
   }
 
-  return <PropComponent {...props} onChange={changeProps} />
+  return <PropComponent {...props} onChange={changeProps} disabled={isLocked} />
 }
 
 export default ComponentProps

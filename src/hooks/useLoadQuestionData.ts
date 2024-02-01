@@ -30,7 +30,7 @@ function useLoadQuestionData() {
     }
 
     //把画布数据存在 redux中
-    dispatch(resetComponents({ componentList, selectedId }))
+    dispatch(resetComponents({ componentList, selectedId, copiedComponent: null }))
   }, [data])
 
   //获取数据

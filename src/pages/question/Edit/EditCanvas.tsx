@@ -3,6 +3,7 @@ import { Spin } from 'antd'
 import { useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import useGetComponentInfo from '../../../hooks/useGetComponentInfo'
+import useBindCanvasKeyPress from '../../../hooks/useBindCanvasKeyPress'
 import { getComponentConfByType } from '../../../components/QuestionComponents'
 import { ComponentInfoType, changeSelectedId } from '../../../store/compontentsReducer'
 import styles from './EditCanvas.module.scss'
@@ -21,6 +22,7 @@ function genComponent(componentInfo: ComponentInfoType) {
 const EditCanvas: FC<PropsType> = ({ loading }) => {
   const { componentList, selectedId } = useGetComponentInfo() //获取store redux数据
   const dispatch = useDispatch() //获取dispatch
+  useBindCanvasKeyPress() //绑定快捷键
 
   function handleClick(e: MouseEvent, id: string) {
     e.stopPropagation()
@@ -37,18 +39,21 @@ const EditCanvas: FC<PropsType> = ({ loading }) => {
 
   return (
     <div className={styles.canvas}>
-      {componentList.map((c) => {
-        const { fe_id } = c
-        const warpperClass = classNames({
-          [styles['component-wrapper']]: true,
-          [styles.selected]: fe_id === selectedId
-        })
-        return (
-          <div key={fe_id} className={warpperClass} onClick={(e) => handleClick(e, fe_id)}>
-            <div className={styles.component}>{genComponent(c)}</div>
-          </div>
-        )
-      })}
+      {componentList
+        .filter((c) => !c.isHidden)
+        .map((c) => {
+          const { fe_id, isLocked } = c
+          const warpperClass = classNames({
+            [styles['component-wrapper']]: true,
+            [styles.selected]: fe_id === selectedId,
+            [styles.locked]: isLocked
+          })
+          return (
+            <div key={fe_id} className={warpperClass} onClick={(e) => handleClick(e, fe_id)}>
+              <div className={styles.component}>{genComponent(c)}</div>
+            </div>
+          )
+        })}
     </div>
   )
 }
