@@ -3,7 +3,9 @@ import { useDispatch } from 'react-redux'
 import {
   deleteSelectedComponent,
   copySelectedComponent,
-  pasteCopiedComponent
+  pasteCopiedComponent,
+  selectPrevComponent,
+  selectNextComponent
 } from '../store/compontentsReducer'
 
 //判断关标是否在Canvas
@@ -33,16 +35,16 @@ function useBindCanvasKeyPress() {
   })
 
   //选中上一个
-  //   useKeyPress(['uparrow'], () => {
-  //     if (!isActiveElementValid()) return
-  //     dispatch(pasteCopiedComponent())
-  //   })
+  useKeyPress('uparrow', () => {
+    if (!isActiveElementValid()) return
+    dispatch(selectPrevComponent())
+  })
 
   //选中下一个
-  //   useKeyPress(['ctrl.v', 'meta.v'], () => {
-  //     if (!isActiveElementValid()) return
-  //     dispatch(pasteCopiedComponent())
-  //   })
+  useKeyPress('downarrow', () => {
+    if (!isActiveElementValid()) return
+    dispatch(selectNextComponent())
+  })
 }
 
 export default useBindCanvasKeyPress
