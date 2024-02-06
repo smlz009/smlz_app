@@ -3,6 +3,7 @@ import { Tabs } from 'antd'
 import type { TabsProps } from 'antd'
 import { AppstoreAddOutlined, BarsOutlined } from '@ant-design/icons'
 import ComponentLib from './ComponentLib'
+import Layers from './Layers'
 
 const tabItems: TabsProps['items'] = [
   {
@@ -23,7 +24,7 @@ const tabItems: TabsProps['items'] = [
         <span>图层</span>
       </div>
     ),
-    children: <div>图层</div>
+    children: <Layers />
   }
 ]
 

@@ -120,6 +120,14 @@ export const componentsSlice = createSlice({
       if (selectIndex < 0) return //未选中组件
       if (selectIndex + 1 === componentList.length) return //选中最后一个
       state.selectedId = componentList[selectIndex + 1].fe_id
+    },
+    //修改组件标题
+    changeComponentTitle(state: ComponentsStateType, action: PayloadAction<{ title: string }>) {
+      const { componentList, selectedId } = state
+      const curCom = componentList.find((c) => c.fe_id === selectedId)
+      if (curCom) {
+        curCom.title = action.payload.title
+      }
     }
   }
 })
@@ -135,7 +143,8 @@ export const {
   copySelectedComponent,
   pasteCopiedComponent,
   selectPrevComponent,
-  selectNextComponent
+  selectNextComponent,
+  changeComponentTitle
 } = componentsSlice.actions
 
 export default componentsSlice.reducer

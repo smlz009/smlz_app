@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks'
 import { useDispatch } from 'react-redux'
 import { getQuestionService } from '../services/question'
 import { resetComponents } from '../store/compontentsReducer'
+import { resetPageInfo } from '../store/pageInfoReduce'
 
 function useLoadQuestionData() {
   const { id = '' } = useParams()
@@ -21,7 +22,7 @@ function useLoadQuestionData() {
   )
   useEffect(() => {
     if (!data) return
-    const { title = '', componentList = [] } = data
+    const { title = '', componentList = [], desc = '', js = '', css = '' } = data
 
     //获取默认的selectedId
     let selectedId = ''
@@ -31,6 +32,7 @@ function useLoadQuestionData() {
 
     //把画布数据存在 redux中
     dispatch(resetComponents({ componentList, selectedId, copiedComponent: null }))
+    dispatch(resetPageInfo({ title, desc, js, css }))
   }, [data])
 
   //获取数据
