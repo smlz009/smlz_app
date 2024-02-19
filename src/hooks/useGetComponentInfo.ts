@@ -7,7 +7,7 @@ function useGetComponentInfo() {
     componentList = [],
     selectedId = '',
     copiedComponent
-  } = useSelector<StateType>((state) => state.components) as ComponentsStateType
+  } = useSelector<StateType>((state) => state.components.present) as ComponentsStateType
 
   const selectedComponent = componentList.find((c) => c.fe_id === selectedId)
 

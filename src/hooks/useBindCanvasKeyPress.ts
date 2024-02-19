@@ -1,5 +1,6 @@
 import { useKeyPress } from 'ahooks'
 import { useDispatch } from 'react-redux'
+import { ActionCreators } from 'redux-undo'
 import {
   deleteSelectedComponent,
   copySelectedComponent,
@@ -9,9 +10,11 @@ import {
 } from '../store/compontentsReducer'
 
 //判断关标是否在Canvas
-function isActiveElementValid(): boolean {
+function isActiveElementValid() {
   const activeElement = document.activeElement
-  return activeElement === document.body
+
+  if (activeElement === document.body) return true
+  if (activeElement?.matches('div[role="button"]')) return true
 }
 
 function useBindCanvasKeyPress() {
@@ -45,6 +48,28 @@ function useBindCanvasKeyPress() {
     if (!isActiveElementValid()) return
     dispatch(selectNextComponent())
   })
+
+  //撤销
+  useKeyPress(
+    ['ctrl.z', 'meta.z'],
+    () => {
+      if (!isActiveElementValid()) return
+      dispatch(ActionCreators.undo())
+    },
+    {
+      exactMatch: true
+    }
+  )
+
+  //重做
+  useKeyPress(
+    ['ctrl.shift.z', 'meta.shift.z'],
+    () => {
+      if (!isActiveElementValid()) return
+      dispatch(ActionCreators.redo())
+    },
+    { exactMatch: true }
+  )
 }
 
 export default useBindCanvasKeyPress

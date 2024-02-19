@@ -7,9 +7,12 @@ import {
   changeSelectedId,
   changeComponentTitle,
   changeComponentHidden,
-  changeComponentLockd
+  changeComponentLockd,
+  moveComponent
 } from '../../../store/compontentsReducer'
 import useGetComponentInfo from '../../../hooks/useGetComponentInfo'
+import SortableContainer from '../../../components/DragSortable/SortableContainer'
+import SortableItem from '../../../components/DragSortable/SortableItem'
 import styles from './Layers.module.scss'
 
 const Layers: FC = () => {
@@ -50,52 +53,62 @@ const Layers: FC = () => {
     dispatch(changeComponentLockd({ fe_id }))
   }
 
+  //SortableContainer  需要id
+  const componentListWithID = componentList.map((c) => ({ ...c, id: c.fe_id }))
+
+  //拖拽排序回掉
+  function handleDragEnd(oldIndex: number, newIndex: number) {
+    dispatch(moveComponent({ oldIndex, newIndex }))
+  }
+
   return (
-    <>
+    <SortableContainer items={componentListWithID} onDragEnd={handleDragEnd}>
       {componentList.map((c) => {
         const { fe_id, title, isHidden, isLocked } = c
         return (
-          <div key={fe_id} className={styles.wrapper} onClick={() => handleTitleClick(fe_id)}>
-            <div
-              className={classNames({
-                [styles.title]: true,
-                [styles.selected]: fe_id === selectedId
-              })}
-            >
-              {fe_id === changeingTitleId && (
-                <Input
-                  value={title}
-                  onChange={changTitle}
-                  onPressEnter={() => setChangeTitleId('')}
-                  onBlur={() => setChangeTitleId('')}
-                />
-              )}
-              {fe_id !== changeingTitleId && title}
+          <SortableItem key={fe_id} id={fe_id}>
+            <div className={styles.wrapper} onClick={() => handleTitleClick(fe_id)}>
+              <div
+                className={classNames({
+                  [styles.title]: true,
+                  [styles.selected]: fe_id === selectedId
+                })}
+              >
+                {fe_id === changeingTitleId && (
+                  <Input
+                    value={title}
+                    onChange={changTitle}
+                    onPressEnter={() => setChangeTitleId('')}
+                    onBlur={() => setChangeTitleId('')}
+                  />
+                )}
+                {fe_id !== changeingTitleId && title}
+              </div>
+              <div className={styles.handler}>
+                <Space>
+                  <Button
+                    size="small"
+                    shape="circle"
+                    className={!isHidden ? styles.btn : ''}
+                    icon={<EyeInvisibleOutlined />}
+                    type={isHidden ? 'primary' : 'text'}
+                    onClick={(e) => changeHidden(e, fe_id, !isHidden)}
+                  />
+                  <Button
+                    size="small"
+                    shape="circle"
+                    className={!isLocked ? styles.btn : ''}
+                    icon={<LockOutlined />}
+                    type={isLocked ? 'primary' : 'text'}
+                    onClick={(e) => changesLocked(e, fe_id)}
+                  />
+                </Space>
+              </div>
             </div>
-            <div className={styles.handler}>
-              <Space>
-                <Button
-                  size="small"
-                  shape="circle"
-                  className={!isHidden ? styles.btn : ''}
-                  icon={<EyeInvisibleOutlined />}
-                  type={isHidden ? 'primary' : 'text'}
-                  onClick={(e) => changeHidden(e, fe_id, !isHidden)}
-                />
-                <Button
-                  size="small"
-                  shape="circle"
-                  className={!isLocked ? styles.btn : ''}
-                  icon={<LockOutlined />}
-                  type={isLocked ? 'primary' : 'text'}
-                  onClick={(e) => changesLocked(e, fe_id)}
-                />
-              </Space>
-            </div>
-          </div>
+          </SortableItem>
         )
       })}
-    </>
+    </SortableContainer>
   )
 }
 

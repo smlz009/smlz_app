@@ -5,7 +5,13 @@ import classNames from 'classnames'
 import useGetComponentInfo from '../../../hooks/useGetComponentInfo'
 import useBindCanvasKeyPress from '../../../hooks/useBindCanvasKeyPress'
 import { getComponentConfByType } from '../../../components/QuestionComponents'
-import { ComponentInfoType, changeSelectedId } from '../../../store/compontentsReducer'
+import {
+  ComponentInfoType,
+  changeSelectedId,
+  moveComponent
+} from '../../../store/compontentsReducer'
+import SortableContainer from '../../../components/DragSortable/SortableContainer'
+import SortableItem from '../../../components/DragSortable/SortableItem'
 import styles from './EditCanvas.module.scss'
 
 type PropsType = {
@@ -37,24 +43,36 @@ const EditCanvas: FC<PropsType> = ({ loading }) => {
     )
   }
 
+  //SortableContainer  需要id
+  const componentListWithID = componentList.map((c) => ({ ...c, id: c.fe_id }))
+
+  //拖拽排序回掉
+  function handleDragEnd(oldIndex: number, newIndex: number) {
+    dispatch(moveComponent({ oldIndex, newIndex }))
+  }
+
   return (
-    <div className={styles.canvas}>
-      {componentList
-        .filter((c) => !c.isHidden)
-        .map((c) => {
-          const { fe_id, isLocked } = c
-          const warpperClass = classNames({
-            [styles['component-wrapper']]: true,
-            [styles.selected]: fe_id === selectedId,
-            [styles.locked]: isLocked
-          })
-          return (
-            <div key={fe_id} className={warpperClass} onClick={(e) => handleClick(e, fe_id)}>
-              <div className={styles.component}>{genComponent(c)}</div>
-            </div>
-          )
-        })}
-    </div>
+    <SortableContainer items={componentListWithID} onDragEnd={handleDragEnd}>
+      <div className={styles.canvas}>
+        {componentList
+          .filter((c) => !c.isHidden)
+          .map((c) => {
+            const { fe_id, isLocked } = c
+            const warpperClass = classNames({
+              [styles['component-wrapper']]: true,
+              [styles.selected]: fe_id === selectedId,
+              [styles.locked]: isLocked
+            })
+            return (
+              <SortableItem key={fe_id} id={fe_id}>
+                <div className={warpperClass} onClick={(e) => handleClick(e, fe_id)}>
+                  <div className={styles.component}>{genComponent(c)}</div>
+                </div>
+              </SortableItem>
+            )
+          })}
+      </div>
+    </SortableContainer>
   )
 }
 
