@@ -47,3 +47,12 @@ export async function deleteQuestionService(ids: string[]): Promise<ResDataType>
   const data = (await axios.delete(`/api/question`), { ids }) as ResDataType
   return data
 }
+
+//答卷列表
+export async function getQuestionStatListService(
+  id: string,
+  opt: { page: number; pageSize: number }
+): Promise<ResDataType> {
+  const data = (await axios.get(`/api/question/stat/${id}`, { params: opt })) as ResDataType
+  return data
+}

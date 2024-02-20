@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux'
 import { useRequest, useKeyPress, useDebounceEffect } from 'ahooks'
 import useGetPageInfo from '../../../hooks/useGetPageInfo'
 import useGetComponentInfo from '../../../hooks/useGetComponentInfo'
-import { PageInfoType, changePageTitle } from '../../../store/pageInfoReduce'
+import { changePageTitle } from '../../../store/pageInfoReduce'
 import EditToolbar from './EditToolbar'
 import { updateQuestionService } from '../../../services/question'
 import styles from './EditHeader.module.scss'
@@ -14,7 +14,7 @@ import styles from './EditHeader.module.scss'
 const { Title } = Typography
 
 const TitleElem: FC = () => {
-  const { title } = useGetPageInfo() as PageInfoType
+  const { title } = useGetPageInfo()
   const dispatch = useDispatch()
   const [editState, setEditState] = useState(false)
 
@@ -52,7 +52,7 @@ const TitleElem: FC = () => {
 
 const SaveButton: FC = () => {
   const { id } = useParams()
-  const pageInfo = useGetPageInfo() as PageInfoType
+  const pageInfo = useGetPageInfo()
   const { componentList = [] } = useGetComponentInfo()
 
   const { loading, run: save } = useRequest(
@@ -90,7 +90,7 @@ const SaveButton: FC = () => {
 
 const PublishButton: FC = () => {
   const { id } = useParams()
-  const pageInfo = useGetPageInfo() as PageInfoType
+  const pageInfo = useGetPageInfo()
   const { componentList = [] } = useGetComponentInfo()
   const nav = useNavigate()
 

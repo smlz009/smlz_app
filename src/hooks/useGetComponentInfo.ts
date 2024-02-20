@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import type { ComponentsStateType, ComponentInfoType } from '../store/compontentsReducer'
+import type { ComponentsStateType } from '../store/compontentsReducer'
 import type { StateType } from '../store/index'
 
 function useGetComponentInfo() {
