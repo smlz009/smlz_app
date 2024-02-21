@@ -56,3 +56,12 @@ export async function getQuestionStatListService(
   const data = (await axios.get(`/api/question/stat/${id}`, { params: opt })) as ResDataType
   return data
 }
+
+//答卷统计数据
+export async function getQuestionStatService(
+  questionId: string,
+  componentId: string
+): Promise<ResDataType> {
+  const data = (await axios.get(`/api/question/stat/${questionId}/${componentId}`)) as ResDataType
+  return data
+}

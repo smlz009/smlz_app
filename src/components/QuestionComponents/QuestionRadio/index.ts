@@ -1,6 +1,7 @@
 import { QuestionRadioDefaultProps } from './interface'
 import Component from './Component'
 import PropComponent from './PropComponent'
+import StatComponent from './StatComponent'
 
 export * from './interface'
 
@@ -10,5 +11,6 @@ export default {
   type: 'questionRadio',
   Component, //画布显示
   defaultProps: QuestionRadioDefaultProps,
-  PropComponent //修改属性
+  PropComponent, //修改属性
+  StatComponent //统计组件
 }

@@ -22,3 +22,10 @@ export const QuestionRadioDefaultProps: QuestionRadioPropsType = {
   ],
   value: ''
 }
+
+export type QuestionRadioStatProps = {
+  stat: Array<{
+    name: string
+    count: number
+  }>
+}
